@@ -1,0 +1,115 @@
+DROP DATABASE IF EXISTS Odonto;
+
+CREATE DATABASE Odonto;
+
+USE Odonto;
+
+DROP TABLE IF EXISTS Usuarios;
+CREATE TABLE Usuarios(
+    Clave integer AUTO_INCREMENT NOT NULL,
+    Login varchar(15),
+    Password varchar(15),
+    Nombre varchar(100),
+    foto mediumblob NULL,
+    PRIMARY KEY( Clave )
+); 
+
+
+DROP TABLE IF EXISTS Paciente;
+CREATE TABLE Paciente(
+    NoAsig integer AUTO_INCREMENT NOT NULL,
+    Nombres varchar(50),
+    Apellidos varchar(50),
+    Calle varchar(50),
+    Numero varchar(10),
+    Colonia varchar(50),
+    Ciudad int,
+    CP int,
+    FechaNac date,
+    Sexo  char(1),
+    Telefono varchar(20),
+    Foto mediumblob NULL,
+    PRIMARY KEY( NoAsig )
+);
+
+
+DROP TABLE IF EXISTS Medico;
+Create Table Medico(
+   ID integer AUTO_INCREMENT NOT NULL,
+   Cedula  integer,
+   Nombres varchar(50),
+   Apellidos varchar(50),
+   Telefono varchar(20),
+   Especialidad integer,
+    PRIMARY KEY( ID )
+);
+
+
+
+DROP TABLE IF EXISTS Disponibilidad;
+Create Table Disponibilidad(
+  MedicoID integer,
+  Dia     varchar(20),
+  Horario1 integer,
+  Horario2 integer,
+  Horario3 integer,
+  Horario4 integer  
+);
+
+
+
+DROP TABLE IF EXISTS Citas;
+Create Table Citas(
+   idHorario integer AUTO_INCREMENT NOT NULL,
+   MedicoId  integer,
+   Fecha     date,
+   Horario   integer,
+   IdPaciente integer,
+   PRIMARY KEY( idHorario )
+);
+
+
+DROP TABLE IF EXISTS Consulta;
+Create Table Consulta(
+    IdConsulta  integer,
+    idHorario   integer,
+    Diagnostico     varchar(250),
+    Costo    float,
+    Observaciones varchar(250)
+);
+
+
+DROP TABLE IF EXISTS DetConsulta;
+Create Table DetConsulta(
+  IdConsulta integer,
+  Cantidad   integer,
+  IdTratamiento  integer,
+  Costo        float,
+  Observaciones  varchar(250)
+);
+
+
+DROP TABLE IF EXISTS Ciudades;
+Create Table Ciudades(
+    IdCiudad  integer AUTO_INCREMENT NOT NULL,
+    Ciudad   varchar(50),
+    Estado   varchar(50),
+    PRIMARY KEY( idCiudad )
+);
+
+
+DROP TABLE IF EXISTS Especialidades;
+Create Table Especialidades(
+    IdEspecialidad  integer AUTO_INCREMENT NOT NULL,
+    Descripcion   varchar(150),
+    PRIMARY KEY( IdEspecialidad )
+);
+
+
+DROP TABLE IF EXISTS Tratamientos;
+Create Table Tratamientos(
+    IdTratamiento  integer AUTO_INCREMENT NOT NULL,
+    Tratamiento   varchar(150),
+    Costo   float,
+    PRIMARY KEY( IdTratamiento )
+);

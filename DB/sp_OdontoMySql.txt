@@ -1,0 +1,427 @@
+---------------------------------------
+---------------------------------------
+---------- STORED PROCEDURES-----------
+---------------------------------------
+---------------------------------------
+
+USE Odonto;
+
+
+# Nuevo Usuario
+DELIMITER $$
+
+CREATE PROCEDURE sp_newUser(
+	p_Login varchar(15),
+    p_Password varchar(15),
+    p_Nombre varchar(100),
+    p_foto mediumblob 
+)
+
+BEGIN
+
+INSERT INTO Usuarios(Login, Password, Nombre, foto) VALUES(p_Login, p_Password,p_Nombre, p_foto);
+
+END $$
+
+
+# Listar Usuarios
+
+DELIMITER $$
+CREATE PROCEDURE sp_listUsers()
+
+BEGIN
+SELECT Clave, Login, Password, Nombre, foto FROM Usuarios;
+END $$
+
+
+# Borrar Usuario
+DELIMITER $$
+
+CREATE PROCEDURE sp_deleteUser(
+	p_Clave integer
+)
+
+BEGIN
+	DELETE FROM usuarios
+    	WHERE Clave = p_Clave;
+END $$
+
+
+# Buscar Usuario
+DELIMITER $$
+	CREATE PROCEDURE sp_findUser
+    (
+        p_Usr varchar(15),
+        p_Pass varchar(15)
+    )
+    BEGIN
+	START TRANSACTION;
+    	    SELECT usuarios.Login, usuarios.Password FROM usuarios
+    	WHERE p_Usr = Login and p_Pass = usuarios.Password;
+    COMMIT;
+    	SELECT 'Fallo' as Resultado;
+    
+    ROLLBACK;
+    	
+END $$
+
+
+
+
+
+
+
+---------------------------------------
+----------- Medicos -------------------
+---------------------------------------
+
+
+# Nuevo Medico
+DELIMITER $$
+	CREATE PROCEDURE sp_newMedico(
+    	p_Cedula integer,
+        p_Nombres varchar(50),
+        p_Apellidos varchar(50),
+        p_Telefono varchar(20),
+        p_Especialidad integer
+    )
+    
+BEGIN
+    	START TRANSACTION;
+        
+        	INSERT INTO medico(Cedula, Nombres, Apellidos, Telefono, Especialidad) VALUES(p_Cedula, p_Nombres, p_Apellidos, 			p_Telefono, p_Especialidad);
+            
+            SELECT 'Exito' as Resultado;
+    	COMMIT;
+        
+        	SELECT 'Fallo' as Resultado;
+        ROLLBACK;
+END $$
+
+
+
+
+# Mostrar Medicos
+
+DELIMITER $$
+	CREATE PROCEDURE sp_showMedicos()
+    
+BEGIN 
+    	
+        START TRANSACTION;
+        	SELECT ID, Cedula, Nombres, Apellidos, Telefono, Especialidad FROM medico;
+        COMMIT;
+END
+
+
+# Buscar medico
+
+DELIMITER $$
+	CREATE PROCEDURE sp_findMedico(
+    	p_ID integer
+    )
+    
+BEGIN
+    	START TRANSACTION;
+        	SELECT ID, Cedula, Nombres, Apellidos, Telefono, Especialidad FROM medico
+            	WHERE ID = p_ID;
+        COMMIT;
+
+END $$
+
+
+# Actualizar medico
+
+DELIMITER $$
+	CREATE PROCEDURE sp_updateMedico(
+        p_ID integer,
+    	p_Cedula integer,
+        p_Nombres varchar(50),
+        p_Apellidos varchar(50),
+        p_Telefono varchar(20),
+        p_Especialidad integer
+    )
+    BEGIN
+    	START TRANSACTION;
+        	UPDATE  medico set Cedula = p_Cedula, Nombres = p_Nombres, Apellidos=p_Apellidos , Telefono=p_Telefono, Especialidad = p_Especialidad
+            	WHERE ID = p_ID;
+                
+                SELECT 'Usuario_Actualizado' AS Resultado;
+    	COMMIT;
+        
+        	SELECT 'Fallo_Actualizacion' AS Resultado;
+            
+        ROLLBACK;
+    END $$
+
+
+# Eliminar Medico
+
+DELIMITER $$
+	CREATE PROCEDURE sp_deleteMedico
+    (
+    	p_ID integer
+    )
+    
+BEGIN
+    	START TRANSACTION;
+        	DELETE FROM medico
+            	WHERE ID = p_ID;
+                
+        	SELECT 'Medico_Eliminado' as Resultado;
+        COMMIT;
+        	SELECT 'Fallo_Eliminacion' as Resultado;
+		ROLLBACK;
+END $$
+
+
+
+---------------------------------------
+----------- Pacientes -----------------
+---------------------------------------
+
+
+# Mostrar Pacientes
+
+DELIMITER $$
+	CREATE PROCEDURE sp_showPaciente()
+    
+    BEGIN
+    
+    START TRANSACTION;
+    	SELECT NoAsig, Nombres, Apellidos, Calle, Numero, Colonia, Ciudad, CP, FechaNac, Sexo, Telefono, Foto FROM paciente;
+    COMMIT;
+    
+    	SELECT 'Fallo_Consulta' as Resultado;
+    
+    
+END $$
+
+
+
+# Agregar Paciente
+
+DELIMITER $$
+	CREATE PROCEDURE sp_newPaciente(
+    	    pNombres varchar(50),
+            pApellidos varchar(50),
+            pCalle varchar(50),
+            pNumero varchar(10),
+            pColonia varchar(50),
+            pCiudad int,
+            pCP int,
+            pFechaNac date,
+            pSexo  char(1),
+            pTelefono varchar(20),
+            pFoto mediumblob
+    
+    )
+    
+    BEGIN
+    	START TRANSACTION;
+        	INSERT INTO paciente(Nombres ,Apellidos ,Calle ,Numero ,Colonia ,Ciudad ,CP,FechaNac,Sexo,Telefono,Foto ) VALUES(pNombres, pApellidos, pCalle, pNumero, pColonia, pCiudad, pCP, pFechaNac, pSexo, pTelefono, pFoto);
+            
+            SELECT 'Registrado_Correctamente' as Resultado;
+            
+        COMMIT;
+        	SELECT 'Fallo_registro' as Resultado;
+        ROLLBACK;
+
+END $$
+
+
+
+# Eliminar Paciente
+
+DELIMITER $$
+	CREATE PROCEDURE sp_deletePaciente(
+    	pID integer
+    )
+    
+    BEGIN
+    	START TRANSACTION;
+        	DELETE FROM paciente
+            	WHERE NoAsig = pID;
+                
+            SELECT 'Paciente_Eliminado' as Resultado;
+        COMMIT;
+        	SELECT 'Acción_No_Realizada' as Resultado;
+        ROLLBACK;
+END $$
+
+
+# Buscar Paciente
+
+DELIMITER $$
+	CREATE PROCEDURE sp_findPaciente
+    (
+    	pID integer
+    )
+    
+BEGIN
+    	START TRANSACTION;
+        	SELECT NoAsig, Nombres, Apellidos ,Calle ,Numero ,Colonia ,Ciudad ,CP,FechaNac,Sexo,Telefono,Foto FROM paciente
+            	WHERE NoAsig = pID;
+        COMMIT;
+        	SELECT 'Paciente_No_Encontrado' as Resultado;
+        ROLLBACK;
+
+END $$
+
+# Actualizar Paciente
+
+DELIMITER $$
+	CREATE PROCEDURE sp_updatePaciente
+    (
+        	pID integer,
+    	   	pNombres varchar(50),
+            pApellidos varchar(50),
+            pCalle varchar(50),
+            pNumero varchar(10),
+            pColonia varchar(50),
+            pCiudad integer,
+            pCP integer,
+            pFechaNac date,
+            pSexo  char(1),
+            pTelefono varchar(20),
+            pFoto mediumblob
+    )
+    
+    BEGIN
+    	START TRANSACTION;
+    	UPDATE paciente set Nombres = pNombres, Apellidos = pApellidos ,Calle = pCalle, Numero = pNumero ,Colonia = pColonia ,Ciudad = pCiudad,CP = pCP,FechaNac = pFechaNac ,Sexo = pSexo ,Telefono = pTelefono ,Foto = pFoto
+        WHERE NoAsig = pID;
+        
+        	SELECT 'Paciente_Actualizado' as Resultado;
+        
+        COMMIT;
+        	SELECT 'Fallo_Actualizacions' as Resultado;
+        ROLLBACK;
+END$$
+
+
+
+---------------------------------------
+--------------- Citas -----------------
+---------------------------------------
+
+
+# Agregar Cita
+
+DELIMITER $$
+	CREATE PROCEDURE sp_newCita
+    (
+    		pidHorario integer,
+        pMedicoId integer,
+        pFecha Date,
+        pHorario integer,
+        pIdPaciente integer
+    )
+    
+BEGIN
+    	START TRANSACTION;
+        	INSERT INTO citas( MedicoId, Fecha, Horario, IdPaciente) VALUES( pMedicoId, pFecha, pHorario, pIdPaciente);
+            
+            SELECT 'Cita_agregada' as Resultado;
+        COMMIT;
+        	SELECT 'Cita_No_Agregada' as Resultado;
+        ROLLBACK;
+
+END $$
+
+
+# Borrar Cita
+
+DELIMITER $$
+	CREATE PROCEDURE sp_deleteCita
+    (
+    	pID integer
+    )
+    
+    BEGIN
+    	START TRANSACTION;
+        	DELETE FROM citas
+            	WHERE idHorario = pID;
+                
+             SELECT 'Cita_Elimida' as Resultado;
+        COMMIT;
+        	SELECT 'Fallo_Eliminacion';
+        ROLLBACK;
+	
+END $$
+
+# Buscar Cita
+
+DELIMITER $$
+	CREATE PROCEDURE sp_findCita
+    (
+    	pID integer
+    )
+    
+    BEGIN
+    START TRANSACTION;
+        SELECT citas.idHorario, citas.MedicoId, citas.Fecha, citas.Horario, citas.IdPaciente FROM citas
+            WHERE citas.idHorario = pID;
+    COMMIT;
+    	SELECT 'Fallo' as Resultado;  
+     ROLLBACK;    
+
+END $$
+
+
+
+
+# Mostrar Citas InnerJoin
+
+
+DELIMITER $$
+	CREATE PROCEDURE sp_showCitas()
+    
+BEGIN	
+		START TRANSACTION;
+        	SELECT 
+            	c.idHorario,
+            	CONCAT(m.Nombres, ' ', m.Apellidos ) as NombreM,
+                c.Fecha,
+                c.Horario,
+               CONCAT(p.Nombres, ' ', P.Apellidos) as NombreP
+                
+            FROM citas c
+            INNER JOIN medico m ON c.MedicoId = m.ID
+            INNER JOIN paciente p ON c.IdPaciente = p.NoAsig;
+        
+        COMMIT;
+        
+        SELECT 'Fallo_Consulta' as Resultado;
+        
+        ROLLBACK;
+
+END $$
+
+# Actualizar cita
+
+	CREATE PROCEDURE sp_updateCita
+    (
+    	pidHorario integer,
+   		pMedicoId  integer,
+  		pFecha     date,
+   		pHorario   integer,
+   		pIdPaciente integer
+    )
+    
+    BEGIN
+    	START TRANSACTION;
+        	UPDATE citas set  MedicoId =pMedicoId, Fecha =pFecha, Horario = pHorario, IdPaciente = pIdPaciente
+            	WHERE idHorario = pidHorario;
+        
+        	SELECT 'Cita_Actualizada' as Resultado;
+        COMMIT;
+        	SELECT 'Fallo_Actualizacion' as Resultado;
+        ROLLBACK;	
+END $$
+
+
+
+
+
+
